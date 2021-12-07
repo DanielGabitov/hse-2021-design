@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class UserBase(BaseModel):
-    github_login: str
+    username: str
     nickname: str
     email: str
 

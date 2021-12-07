@@ -16,6 +16,7 @@ requests = "*"
 
 [dev-packages]
 pytest = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.8"
