@@ -54,7 +54,7 @@ async def authorize(code: str, response: Response, db=Depends(setup.get_db)):
     response.set_cookie(key='username', value=username)
     response.set_cookie(key='access_token', value=token)
 
-    user = crud.get_reviewer(db=db, username=username)
+    user = crud.get_reviewer_by_username(db=db, username=username)
     if user is None:
         try:
             # todo (2) pass nickname here

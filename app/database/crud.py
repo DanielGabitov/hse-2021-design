@@ -7,15 +7,27 @@ from app.database.models.class_model import ClassModel
 from app.database.models.class_model import ClassToStudentAssociation
 
 
-def get_reviewer(*, db: Session, username: str) -> ReviewerModel:
+def get_reviewer_by_username(*, db: Session, username: str) -> ReviewerModel:
     return (db.query(ReviewerModel).
             filter(ReviewerModel.username == username).
             first())
 
 
-def get_student(*, db: Session, username: str) -> StudentModel:
+def get_reviewer_by_id(*, db: Session, reviewer_id: int) -> ReviewerModel:
+    return (db.query(ReviewerModel).
+            filter(ReviewerModel.id == reviewer_id).
+            first())
+
+
+def get_student_by_username(*, db: Session, username: str) -> StudentModel:
     return (db.query(StudentModel).
             filter(StudentModel.username == username).
+            first())
+
+
+def get_student_by_id(*, db: Session, student_id: int) -> StudentModel:
+    return (db.query(StudentModel).
+            filter(StudentModel.id == student_id).
             first())
 
 

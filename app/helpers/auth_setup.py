@@ -17,7 +17,7 @@ async def get_authorized_user(db=Depends(get_db),
                               access_token: Optional[str] = Cookie(None)):
     if username is None or access_token is None:
         raise HTTPException(status_code=401)
-    user = crud.get_reviewer(db=db, username=username)
+    user = crud.get_reviewer_by_username(db=db, username=username)
     if user is None:
         raise HTTPException(status_code=401)
     return AuthInfo(user=user, access_token=access_token)

@@ -1,11 +1,11 @@
 import re
-from typing import Tuple
+from typing import Tuple, List
 
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.exc import DatabaseError
 
-from app.schemas.class_schema import ClassCreate
-from app.schemas.student_schema import StudentBase
+from app.schemas.class_schema import Class, ClassCreate
+from app.schemas.student_schema import Student, StudentCreate
 from app.database.models.class_model import ClassModel
 from app.database.models.student_model import StudentModel
 
@@ -20,10 +20,10 @@ classes_router = APIRouter(
 github_repo_pattern = r'[a-zA-Z._-]+'
 
 
-def get_students(*, db, students: [StudentBase]):
+def get_students(*, db, students: [StudentCreate]):
     fetched_students: [Tuple[StudentModel, str]] = []
     for student in students:
-        student_model: StudentModel = crud.get_student(
+        student_model: StudentModel = crud.get_student_by_username(
             db=db,
             username=student.username
         )
@@ -70,6 +70,23 @@ async def create_class(class_: ClassCreate, db=Depends(setup.get_db),
         raise HTTPException(status_code=500, detail=f'Error in DB. {e.detail}')
 
     return f"Class has been successfully created. Github link: {link_to_repo}."
+
+
+@classes_router.get('/', response_model=Class)
+async def get_class(class_id: int, db=Depends(setup.get_db),
+                    auth_info: AuthInfo = Depends(get_authorized_user)):
+    class_ = crud.get_class(db=db, class_id=class_id)
+    if class_ is None:
+        raise HTTPException(
+            status_code=400,
+            detail=f'Could not find class with id <{class_id}>'
+        )
+
+    student_ids: List[int] = []
+    for a in class_.students:
+        student_ids.append(a.student.id)
+    return Class(id=class_.id, name=class_.name,
+                 creator_id=class_.creator_id, student_ids=student_ids)
 
 
 @classes_router.delete('/')

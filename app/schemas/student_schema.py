@@ -3,6 +3,9 @@ from pydantic import BaseModel
 
 class StudentBase(BaseModel):
     username: str
+
+
+class StudentCreate(BaseModel):
     nickname: str
 
 
