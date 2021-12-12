@@ -73,8 +73,7 @@ async def create_class(class_: ClassCreate, db=Depends(setup.get_db),
 
 
 @classes_router.get('/', response_model=Class)
-async def get_class(class_id: int, db=Depends(setup.get_db),
-                    auth_info: AuthInfo = Depends(get_authorized_user)):
+async def get_class(class_id: int, db=Depends(setup.get_db)):
     class_ = crud.get_class(db=db, class_id=class_id)
     if class_ is None:
         raise HTTPException(
