@@ -25,9 +25,11 @@ def upgrade():
     op.execute(CreateSequence(id_sequence))
     op.create_table(
         class_table_name,
-        sa.Column('id', sa.Integer, id_sequence, server_default=id_sequence.next_value(), primary_key=True),
+        sa.Column('id', sa.Integer, id_sequence,
+                  server_default=id_sequence.next_value(), primary_key=True),
         sa.Column('name', sa.Text, nullable=False),
-        sa.Column('creator_id', sa.Integer, sa.ForeignKey('reviewer.id'), nullable=False),
+        sa.Column('creator_id', sa.Integer,
+                  sa.ForeignKey('reviewer.id'), nullable=False),
         sa.UniqueConstraint('name', 'creator_id')
     )
     op.create_table(

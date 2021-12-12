@@ -19,6 +19,7 @@ class ClassModel(Base):
     id = sa.Column('id', sa.Integer, primary_key=True)
     name = sa.Column('name', sa.Text, nullable=False)
 
-    creator_id = sa.Column('creator_id', sa.Integer, sa.ForeignKey('reviewer.id'), nullable=False)
+    creator_id = sa.Column('creator_id', sa.Integer,
+                           sa.ForeignKey('reviewer.id'), nullable=False)
 
     students = relationship('Association', back_populates='class_')

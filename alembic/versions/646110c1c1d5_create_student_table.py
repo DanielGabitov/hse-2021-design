@@ -23,7 +23,8 @@ def upgrade():
     op.execute(CreateSequence(id_sequence))
     op.create_table(
         table_name,
-        sa.Column('id', sa.Integer, id_sequence, server_default=id_sequence.next_value(), primary_key=True),
+        sa.Column('id', sa.Integer, id_sequence,
+                  server_default=id_sequence.next_value(), primary_key=True),
         sa.Column('username', sa.String(39), nullable=False, unique=True),
     )
 
