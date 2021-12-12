@@ -10,6 +10,7 @@ class ClassBase(BaseModel):
 
 class ClassCreate(ClassBase):
     students: List[StudentCreate]
+    reviewers_ids: List[int]
 
 
 class Class(ClassBase):

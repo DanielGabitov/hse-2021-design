@@ -56,14 +56,23 @@ async def create_class(class_: ClassCreate, db=Depends(setup.get_db),
             detail=f'User <{auth_info.user.username}> already has class '
                    f'with name <{class_.name}>')
 
+    if auth_info.user.id not in class_.reviewers_ids:
+        raise HTTPException(
+            status_code=400,
+            detail=f'User that creates class should be in reviewers list.'
+        )
+
     students_with_nicknames = get_students(db=db, students=class_.students)
     link_to_repo = github_interactions.create_repo(auth_info=auth_info,
                                                    class_=class_)
 
     try:
+        reviewers = crud.get_reviewers_by_ids(db=db,
+                                              reviewers_ids=class_.reviewers_ids)
         crud.create_class(db=db, class_name=class_.name,
                           creator=auth_info.user,
-                          students_data=students_with_nicknames)
+                          students_data=students_with_nicknames,
+                          reviewers=reviewers)
     except DatabaseError as e:
         github_interactions.delete_repo(auth_info=auth_info,
                                         class_name=class_.name)

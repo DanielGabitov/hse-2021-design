@@ -17,7 +17,8 @@ branch_labels = None
 depends_on = None
 
 class_table_name = 'class'
-association_table_name = 'classes_to_students'
+classes_to_students_table_name = 'classes_to_students'
+classes_to_reviewers_table_name = 'classes_to_reviewers'
 id_sequence = Sequence(f'{class_table_name}_seq')
 
 
@@ -33,14 +34,20 @@ def upgrade():
         sa.UniqueConstraint('name', 'creator_id')
     )
     op.create_table(
-        association_table_name,
+        classes_to_students_table_name,
         sa.Column('class_id', sa.Integer, sa.ForeignKey('class.id')),
         sa.Column('student_id', sa.Integer, sa.ForeignKey('student.id')),
         sa.Column('student_nickname', sa.Text)
     )
+    op.create_table(
+        classes_to_reviewers_table_name,
+        sa.Column('class_id', sa.Integer, sa.ForeignKey('class.id')),
+        sa.Column('reviewer_id', sa.Integer, sa.ForeignKey('reviewer.id'))
+    )
 
 
 def downgrade():
-    op.drop_table(association_table_name)
+    op.drop_table(classes_to_reviewers_table_name)
+    op.drop_table(classes_to_students_table_name)
     op.drop_table(class_table_name)
     op.execute(DropSequence(id_sequence))

@@ -19,6 +19,12 @@ def get_reviewer_by_id(*, db: Session, reviewer_id: int) -> ReviewerModel:
             first())
 
 
+def get_reviewers_by_ids(*, db: Session, reviewers_ids: List[int]) -> List[ReviewerModel]:
+    return (db.query(ReviewerModel).
+            filter(ReviewerModel.id.in_(reviewers_ids)).
+            all())
+
+
 def get_student_by_username(*, db: Session, username: str) -> StudentModel:
     return (db.query(StudentModel).
             filter(StudentModel.username == username).
@@ -49,8 +55,10 @@ def create_student(*, db: Session, username: str) -> ReviewerModel:
 
 
 def create_class(*, db: Session, class_name: str, creator: ReviewerModel,
+                 reviewers: List[ReviewerModel],
                  students_data: List[Tuple[StudentModel, str]]) -> ClassModel:
-    class_: ClassModel = ClassModel(name=class_name, creator=creator)
+    class_: ClassModel = ClassModel(name=class_name, creator=creator,
+                                    reviewers=reviewers)
     for student, nickname in students_data:
         a = ClassToStudentAssociation(student_nickname=nickname)
         a.student = student
@@ -76,5 +84,4 @@ def find_class(*, db: Session, class_name: str,
 def delete_class(*, db: Session, class_: ClassModel):
     return (db.query(ClassModel).
             filter(ClassModel == class_).
-            delete()
-            )
+            delete())

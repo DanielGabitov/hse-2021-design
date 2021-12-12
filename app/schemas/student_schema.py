@@ -5,7 +5,7 @@ class StudentBase(BaseModel):
     username: str
 
 
-class StudentCreate(BaseModel):
+class StudentCreate(StudentBase):
     nickname: str
 
 
