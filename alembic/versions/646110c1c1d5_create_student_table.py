@@ -1,25 +1,21 @@
-"""create_class_table
+"""CREATE_STUDENT_TABLE
 
-Revision ID: 767cf6782aa3
+Revision ID: 646110c1c1d5
 Revises: b58a9e6c9fe6
-Create Date: 2021-12-03 22:58:07.053698
+Create Date: 2021-12-12 17:20:13.122861
 
 """
+from sqlalchemy.schema import Sequence, CreateSequence, DropSequence
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
-from sqlalchemy import Sequence, ForeignKey, UniqueConstraint
-from sqlalchemy.sql.ddl import CreateSequence, DropSequence
-
-revision = '767cf6782aa3'
+revision = '646110c1c1d5'
 down_revision = 'b58a9e6c9fe6'
 branch_labels = None
 depends_on = None
 
-
-table_name = 'class'
+table_name = 'student'
 id_sequence = Sequence(f'{table_name}_seq')
 
 
@@ -28,13 +24,10 @@ def upgrade():
     op.create_table(
         table_name,
         sa.Column('id', sa.Integer, id_sequence, server_default=id_sequence.next_value(), primary_key=True),
-        sa.Column('name', sa.Text, nullable=False),
-        sa.Column('creator_id', sa.Integer, sa.ForeignKey('utilisateur.id'), nullable=False),
-        sa.UniqueConstraint('name', 'creator_id')
+        sa.Column('username', sa.String(39), nullable=False, unique=True),
     )
 
 
 def downgrade():
     op.drop_table(table_name)
     op.execute(DropSequence(id_sequence))
-

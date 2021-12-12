@@ -21,7 +21,7 @@ COPY .env /code
 # Install netcat for wait-for
 RUN apt-get -q update && apt-get -qy install netcat
 
-# Run alembic migrations with wait-for tool
+# Run fastapi app with wait-for tool
 # See what wait-for does: https://github.com/eficode/wait-for
-# todo download wait-for from git repo
+# todo (7) download wait-for from git repo
 CMD ["sh", "-c", "./wait-for database:5432 -- pipenv run uvicorn app.main:app --host 0.0.0.0 --port 80"]

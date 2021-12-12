@@ -2,6 +2,7 @@ import os
 import requests
 
 from fastapi import APIRouter, Depends, Response, HTTPException
+from sqlalchemy.exc import DatabaseError
 from starlette.responses import RedirectResponse
 
 from app.helpers.github_interactions import get_user_info
@@ -28,7 +29,9 @@ async def login():
                                 f'redirect_uri={redirect_uri}')
 
 
-# todo handle denied request to login
+# todo (1) handle denied request
+# todo (2) login and nickname flow for registration possible fix: split registration and logging in
+# todo (3) what happens if user signing up already was pre-registrated as student?
 @auth_router.get('/')
 async def authorize(code: str, response: Response, db=Depends(setup.get_db)):
     client_id = os.getenv('GITHUB_CLIENT_ID')
@@ -47,9 +50,12 @@ async def authorize(code: str, response: Response, db=Depends(setup.get_db)):
     response.set_cookie(key='username', value=username)
     response.set_cookie(key='access_token', value=token)
 
-    if crud.get_user(db=db, username=username) is None:
-        crud.create_user(db=db, username=username, email=email)
-        return f'User <{username}> has been successfully signed UP'
-
+    user = crud.get_reviewer(db=db, username=username)
+    if user is None:
+        try:
+            # todo (2) pass nickname here
+            crud.create_reviewer(db=db, username=username, email=email, nickname='TODO')
+        except DatabaseError as e:
+            raise HTTPException(status_code=500, detail=f'Error in DB: {e.detail}')
     # printing token is NOT safe but its here now for debug convenience
     return f'User <{username}> with access_token = <{token}> has been successfully signed IN'

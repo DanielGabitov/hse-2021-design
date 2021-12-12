@@ -1,4 +1,7 @@
+from typing import List
 from pydantic import BaseModel
+
+from app.schemas.student_schema import StudentBase
 
 
 class ClassBase(BaseModel):
@@ -6,9 +9,12 @@ class ClassBase(BaseModel):
 
 
 class ClassCreate(ClassBase):
-    pass
+    students: List[StudentBase]
 
 
 class Class(ClassCreate):
     id: int
     creator_id: int
+
+    class Config:
+        orm_mode = True

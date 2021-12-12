@@ -1,11 +1,12 @@
 import requests
+from typing import Optional, Tuple, NoReturn
 from fastapi import HTTPException
 
 from app.schemas.class_schema import ClassCreate
 from app.helpers.auth_setup import AuthInfo
 
 
-def get_user_email(*, username: str, access_token: str):
+def get_user_email(*, username: str, access_token: str) -> str:
     response = requests.get(
         url=f'https://api.github.com/user/emails',
         headers={'Authorization': f'token {access_token}'}
@@ -25,10 +26,11 @@ def get_user_email(*, username: str, access_token: str):
     return email
 
 
-# todo async
-def get_user_info(*, access_token: str):
+# todo (5) async
+def get_user_info(*, access_token: str) -> Tuple[str, str]:
 
-    response = requests.get(url='https://api.github.com/user', headers={'Authorization': f'token {access_token}'})
+    response = requests.get(url='https://api.github.com/user',
+                            headers={'Authorization': f'token {access_token}'})
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail='could not fetch user info')
 
@@ -39,17 +41,19 @@ def get_user_info(*, access_token: str):
     return username, email
 
 
-def create_repo(*, auth_info: AuthInfo, class_: ClassCreate):
+def create_repo(*, auth_info: AuthInfo, class_: ClassCreate) -> str:
     response = requests.post(url='https://api.github.com/user/repos',
                              headers={'Authorization': f'token {auth_info.access_token}'},
                              json={'name': class_.name})
     if response.status_code != 201:
         raise HTTPException(status_code=500,
-                            detail=f'could not create <{class_.name}> class for <{auth_info.user.username}>')
+                            detail=f'could not create <{class_.name}> class for <{auth_info.user.username}>. '
+                                   f'github response content: {response.content}')
     return response.json()['html_url']
 
 
-def delete_repo(*, auth_info: AuthInfo, class_name: str):
+# todo (6) throwing HTTP exception out of these functions is not a good idea
+def delete_repo(*, auth_info: AuthInfo, class_name: str) -> NoReturn:
     response = requests.delete(url=f'https://api.github.com/repos/{auth_info.user.username}/{class_name}',
                                headers={'Authorization': f'token {auth_info.access_token}'})
     if response.status_code != 204:
@@ -57,7 +61,7 @@ def delete_repo(*, auth_info: AuthInfo, class_name: str):
                             detail=f'could not delete <{class_name}> class for <{auth_info.user.username}>')
 
 
-def get_repo(*, auth_info: AuthInfo, class_name: str):
+def get_repo(*, auth_info: AuthInfo, class_name: str) -> Optional[str]:
     response = requests.get(url=f'https://api.github.com/repos/{auth_info.user}/{class_name}')
     if response.status_code == 404:
         return None
