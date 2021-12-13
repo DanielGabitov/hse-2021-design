@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 
 from app.schemas.student_schema import Student
+
 from app.database import crud
 from app.database.setup import get_db
 

@@ -4,12 +4,12 @@ from sqlalchemy.exc import DatabaseError
 
 from app.database.models.class_model import ClassModel
 from app.database.models.reviewer_model import ReviewerModel
+from app.schemas.homework_schema import Homework, HomeworkCreate
+from app.helpers.auth_setup import AuthInfo, get_authorized_user
+
 from app.database.setup import get_db
 from app.database import crud
-from app.schemas.homework_schema import Homework, HomeworkCreate
 from app.helpers import github_interactions
-from app.helpers.auth_setup import AuthInfo, get_authorized_user
-# todo (8) order imports everywhere
 
 homeworks_router = APIRouter(
     prefix='/homeworks'

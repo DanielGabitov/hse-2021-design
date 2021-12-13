@@ -5,13 +5,14 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.exc import DatabaseError
 
 from app.schemas.class_schema import Class, ClassCreate
-from app.schemas.student_schema import Student, StudentCreate
+from app.schemas.student_schema import StudentCreate
 from app.database.models.class_model import ClassModel
 from app.database.models.student_model import StudentModel
+from app.helpers.auth_setup import AuthInfo, get_authorized_user
 
 from app.database import crud, setup
 from app.helpers import github_interactions
-from app.helpers.auth_setup import AuthInfo, get_authorized_user
+
 
 classes_router = APIRouter(
     prefix='/classes'
