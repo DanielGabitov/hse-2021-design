@@ -1,6 +1,7 @@
 from typing import Optional, List, Tuple
 from sqlalchemy.orm import Session
 
+from app.database.models.homework_model import HomeworkModel
 from app.database.models.reviewer_model import ReviewerModel
 from app.database.models.student_model import StudentModel
 from app.database.models.class_model import ClassModel
@@ -19,7 +20,8 @@ def get_reviewer_by_id(*, db: Session, reviewer_id: int) -> ReviewerModel:
             first())
 
 
-def get_reviewers_by_ids(*, db: Session, reviewers_ids: List[int]) -> List[ReviewerModel]:
+def get_reviewers_by_ids(*, db: Session,
+                         reviewers_ids: List[int]) -> List[ReviewerModel]:
     return (db.query(ReviewerModel).
             filter(ReviewerModel.id.in_(reviewers_ids)).
             all())
@@ -67,6 +69,30 @@ def create_class(*, db: Session, class_name: str, creator: ReviewerModel,
     db.commit()
     db.refresh(class_)
     return class_
+
+
+def create_homework(
+        *, db: Session, name: str, branch_name: str, class_: ClassModel,
+        creator: ReviewerModel) -> HomeworkModel:
+
+    hw = HomeworkModel(name=name, branch_name=branch_name, class_=class_,
+                       creator=creator)
+    db.add(hw)
+    db.commit()
+    db.refresh(hw)
+    return hw
+
+
+def get_homework_by_id(*, db: Session, homework_id: int):
+    return (db.query(HomeworkModel).
+            filter(HomeworkModel.id == homework_id).
+            first())
+
+
+def find_homework(*, db: Session, creator_id: int, name: str):
+    (db.query(HomeworkModel).
+     filter(HomeworkModel.name == name and
+            HomeworkModel.creator_id == creator_id))
 
 
 def get_class(*, db: Session, class_id: int) -> ClassModel:

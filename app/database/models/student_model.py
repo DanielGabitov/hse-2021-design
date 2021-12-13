@@ -11,4 +11,5 @@ class StudentModel(Base):
     username = sa.Column('username', sa.String(39),
                          nullable=False, unique=True)
 
-    classes = relationship('ClassToStudentAssociation', back_populates='student')
+    classes = relationship('ClassToStudentAssociation',
+                           back_populates='student')

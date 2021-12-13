@@ -3,6 +3,7 @@ import os
 from fastapi import FastAPI
 from starlette.middleware.sessions import SessionMiddleware
 from app.endpoints import authorization, classes, students, reviewers
+from app.endpoints import homeworks
 
 app = FastAPI()
 
@@ -13,3 +14,4 @@ app.include_router(authorization.auth_router)
 app.include_router(classes.classes_router)
 app.include_router(students.students_router)
 app.include_router(reviewers.reviewers_router)
+app.include_router(homeworks.homeworks_router)

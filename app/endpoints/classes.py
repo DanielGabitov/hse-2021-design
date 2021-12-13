@@ -35,6 +35,8 @@ def get_students(*, db, students: [StudentCreate]):
 
 
 # todo (4) add logging
+# todo (5) add class from existing repo
+# todo (6) private classes
 @classes_router.post('/')
 async def create_class(class_: ClassCreate, db=Depends(setup.get_db),
                        auth_info: AuthInfo = Depends(get_authorized_user)):
@@ -67,8 +69,9 @@ async def create_class(class_: ClassCreate, db=Depends(setup.get_db),
                                                    class_=class_)
 
     try:
-        reviewers = crud.get_reviewers_by_ids(db=db,
-                                              reviewers_ids=class_.reviewers_ids)
+        reviewers = crud.get_reviewers_by_ids(
+            db=db, reviewers_ids=class_.reviewers_ids
+        )
         crud.create_class(db=db, class_name=class_.name,
                           creator=auth_info.user,
                           students_data=students_with_nicknames,

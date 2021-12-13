@@ -14,3 +14,5 @@ class ReviewerModel(Base):
     email = sa.Column('email', sa.Text, nullable=False)
 
     created_classes = relationship('ClassModel', backref=backref('creator'))
+    created_homeworks = relationship('HomeworkModel',
+                                     backref=backref('creator'))

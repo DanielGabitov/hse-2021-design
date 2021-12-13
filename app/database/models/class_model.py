@@ -1,5 +1,5 @@
 import sqlalchemy as sa
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from app.database.setup import Base
 
@@ -29,5 +29,9 @@ class ClassModel(Base):
     creator_id = sa.Column('creator_id', sa.Integer,
                            sa.ForeignKey('reviewer.id'), nullable=False)
 
-    students = relationship('ClassToStudentAssociation', back_populates='class_')
-    reviewers = relationship('ReviewerModel', secondary=classes_to_reviewers_table, backref='review_classes')
+    students = relationship('ClassToStudentAssociation',
+                            back_populates='class_')
+    reviewers = relationship('ReviewerModel',
+                             secondary=classes_to_reviewers_table,
+                             backref='review_classes')
+    homeworks = relationship('HomeworkModel', backref=backref('class_'))
