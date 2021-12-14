@@ -16,15 +16,15 @@ down_revision = '88e43f57fef9'
 branch_labels = None
 depends_on = None
 
-
-table_name = 'homework'
-id_sequence = Sequence(f'{table_name}_seq')
+grades_table_name = 'grade'
+hw_table_name = 'homework'
+id_sequence = Sequence(f'{hw_table_name}_seq')
 
 
 def upgrade():
     op.execute(CreateSequence(id_sequence))
     op.create_table(
-        table_name,
+        hw_table_name,
         sa.Column('id', sa.Integer, id_sequence,
                   server_default=id_sequence.next_value(), primary_key=True),
         sa.Column('class_id', sa.Integer,
@@ -36,8 +36,19 @@ def upgrade():
         sa.UniqueConstraint('name', 'creator_id'),
         sa.UniqueConstraint('name', 'branch_name')
     )
+    op.create_table(
+        grades_table_name,
+        sa.Column('homework_id', sa.Integer,
+                  sa.ForeignKey('homework.id'), primary_key=True),
+        sa.Column('student_id', sa.Integer,
+                  sa.ForeignKey('student.id'), primary_key=True),
+        sa.Column('reviewer_id', sa.Integer,
+                  sa.ForeignKey('student.id'), nullable=False),
+        sa.Column('grade', sa.Integer, nullable=False),
+    )
 
 
 def downgrade():
-    op.drop_table(table_name)
+    op.drop_table(grades_table_name)
+    op.drop_table(hw_table_name)
     op.execute(DropSequence(id_sequence))

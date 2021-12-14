@@ -118,3 +118,19 @@ def create_branch(owner: str, repo: str, branch_name: str,
             detail=f'could not create branch <{branch_name}> for '
                    f'<{owner}/{repo}> repo on commit <{commit_sha}>'
         )
+
+
+def delete_branch(owner: str, repo: str, branch_name: str,
+                  access_token: str) -> NoReturn:
+    response = requests.delete(
+        url=f'https://api.github.com/repos/{owner}/{repo}/git/'
+            f'refs/heads/{branch_name}',
+        headers={'Authorization': f'token {access_token}'},
+    )
+
+    if response.status_code != 204:
+        raise HTTPException(
+            status_code=500,
+            detail=f'could not delete branch <{branch_name}> for '
+                   f'<{owner}/{repo}> repo'
+        )

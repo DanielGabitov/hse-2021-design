@@ -6,8 +6,10 @@ from app.database.setup import Base
 classes_to_reviewers_table = sa.Table(
     'classes_to_reviewers',
     Base.metadata,
-    sa.Column('class_id', sa.Integer, sa.ForeignKey('class.id')),
-    sa.Column('reviewer_id', sa.Integer, sa.ForeignKey('reviewer.id'))
+    sa.Column('class_id', sa.Integer,
+              sa.ForeignKey('class.id'), primary_key=True),
+    sa.Column('reviewer_id', sa.Integer,
+              sa.ForeignKey('reviewer.id'), primary_key=True)
 )
 
 

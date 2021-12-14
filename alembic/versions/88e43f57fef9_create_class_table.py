@@ -41,8 +41,10 @@ def upgrade():
     )
     op.create_table(
         classes_to_reviewers_table_name,
-        sa.Column('class_id', sa.Integer, sa.ForeignKey('class.id')),
-        sa.Column('reviewer_id', sa.Integer, sa.ForeignKey('reviewer.id'))
+        sa.Column('class_id', sa.Integer,
+                  sa.ForeignKey('class.id'), primary_key=True),
+        sa.Column('reviewer_id', sa.Integer,
+                  sa.ForeignKey('reviewer.id'), primary_key=True)
     )
 
 

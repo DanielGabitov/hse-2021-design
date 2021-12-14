@@ -1,7 +1,7 @@
 from typing import Optional, List, Tuple
 from sqlalchemy.orm import Session
 
-from app.database.models.homework_model import HomeworkModel
+from app.database.models.homework_model import HomeworkModel, GradeModel
 from app.database.models.reviewer_model import ReviewerModel
 from app.database.models.student_model import StudentModel
 from app.database.models.class_model import ClassModel
@@ -111,3 +111,14 @@ def delete_class(*, db: Session, class_: ClassModel):
     return (db.query(ClassModel).
             filter(ClassModel == class_).
             delete())
+
+
+def create_grade(*, db: Session, homework: HomeworkModel,
+                 reviewer: ReviewerModel, student: StudentModel,  grade: int):
+    grade_model = GradeModel(grade=grade, reviewer_id=reviewer.id)
+    grade_model.student = student
+    homework.students.append(grade_model)
+    db.add(grade_model)
+    db.commit()
+    db.refresh(grade_model)
+    return grade_model

@@ -13,3 +13,4 @@ class StudentModel(Base):
 
     classes = relationship('ClassToStudentAssociation',
                            back_populates='student')
+    homeworks = relationship('GradeModel', back_populates='student')
